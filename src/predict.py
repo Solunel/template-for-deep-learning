@@ -1,7 +1,7 @@
 # src/predict.py
 import logging
 import torch
-from dataset import prepare_dataloader
+from dataset import  get_test_loader
 from engine import Engine
 from model import build_model
 from utils import init_env, load_config, save_predictions, load_class_map
@@ -18,7 +18,7 @@ def predict():
     logger.info(f"使用设备: {device}")
 
     # 2. 准备测试数据加载器
-    test_loader, _ = prepare_dataloader(config, 'test')
+    test_loader = get_test_loader(config)
 
     try:
         # 3. 加载类别映射

@@ -2,7 +2,7 @@
 import logging
 import torch
 import torch.nn as nn
-from dataset import prepare_dataloader
+from dataset import get_dataloaders
 from engine import Engine
 from model import build_model
 from utils import init_env, load_config, get_cosine_schedule_with_warmup, resolve_class_map
@@ -20,8 +20,9 @@ def train():
     logger.info(f"使用设备: {device}")
 
     # 2. 准备数据加载器
-    train_loader, train_dataset = prepare_dataloader(config, 'train')
-    dev_loader, _ = prepare_dataloader(config, 'dev')
+    logger.info("正在准备数据加载器...")
+    train_loader, dev_loader, train_dataset = get_dataloaders(config)
+    logger.info("数据加载器准备完成。")
 
     # 3. 解析类别信息
     _, n_classes = resolve_class_map(config, train_dataset)
