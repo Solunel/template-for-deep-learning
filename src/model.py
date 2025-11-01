@@ -16,7 +16,7 @@ class YourModel(nn.Module):
     """
 
     # --- 初始化方法 ---
-    def __init__(self, params: Dict[str, Any], n_classes: int):
+    def __init__(self, params, n_classes):
         """
         当创建这个类的实例时，这个方法会被调用，用于定义模型的结构。
         Args:
@@ -52,7 +52,7 @@ class YourModel(nn.Module):
         )
 
     # --- 前向传播方法 ---
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
+    def forward(self, x):
         """
         这个方法定义了数据在网络中的流动方式（前向传播）。
         当调用 `model(input_data)` 时，这个方法会被自动执行。
@@ -66,7 +66,7 @@ class YourModel(nn.Module):
 
 
 # --- 模型构建函数 (工厂模式) ---
-def build_model(config: Dict[str, Any], n_classes: int) -> nn.Module:
+def build_model(config, n_classes):
     """
     这是一个工厂函数，用于根据配置构建并返回模型实例。
     使用工厂函数的好处是，如果未来你想根据配置选择不同的模型 (比如 ResNet34, VGG)，

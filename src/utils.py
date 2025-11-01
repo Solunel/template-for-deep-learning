@@ -18,7 +18,7 @@ import math  # Python 内置的数学库
 logger = logging.getLogger(__name__)
 
 
-def validate_config(config: Dict[str, Any]) -> None:
+def validate_config(config):
     """校验配置文件中必需的键是否存在，实现“尽早失败”(fail-fast)策略。"""
     # 定义在 config['paths'] 中必须存在的键
     required_paths = ['data_root', 'checkpoint_dir', 'log_dir', 'output_path', 'class_map_file']
@@ -32,7 +32,7 @@ def validate_config(config: Dict[str, Any]) -> None:
     logger.info("配置文件校验通过。")
 
 
-def init_env(config: Dict[str, Any]) -> None:
+def init_env(config):
     """根据配置初始化程序运行环境（日志、目录、随机种子）。"""
     # 首先，校验配置文件是否合法
     validate_config(config)
@@ -67,7 +67,7 @@ def init_env(config: Dict[str, Any]) -> None:
     logger.info("环境初始化完成。")
 
 
-def load_config(config_path: str = "config.yaml") -> Dict[str, Any]:
+def load_config(config_path = "config.yaml"):
     """加载并解析 YAML 格式的配置文件。"""
     logger.info(f"正在从 {config_path} 加载配置...")
     # 使用 'with open' 语法打开文件，可以确保文件在使用后被正确关闭
@@ -76,7 +76,7 @@ def load_config(config_path: str = "config.yaml") -> Dict[str, Any]:
         return yaml.safe_load(f)
 
 
-def save_predictions(results: List[Tuple[str, str]], path: str) -> None:
+def save_predictions(results, path) -> None:
     """将预测结果保存为 Kaggle 要求的 CSV 格式。"""
     # 打开指定的路径用于写入 ('w')，newline='' 是为了防止写入空行
     with open(path, 'w', newline='') as f:
@@ -90,7 +90,7 @@ def save_predictions(results: List[Tuple[str, str]], path: str) -> None:
     logger.info(f"预测结果已保存至: {path}")
 
 
-def resolve_class_map(config: Dict[str, Any], train_dataset: torch.utils.data.Dataset) -> Tuple[Dict[str, int], int]:
+def resolve_class_map(config, train_dataset):
     """解决类别映射：存在则加载，不存在则从训练集创建并保存。"""
     # 获取检查点目录
     ckpt_dir = Path(config['paths']['checkpoint_dir'])
@@ -122,7 +122,7 @@ def resolve_class_map(config: Dict[str, Any], train_dataset: torch.utils.data.Da
     return class_to_idx, n_classes
 
 
-def load_class_map(config: Dict[str, Any]) -> Tuple[Dict[int, str], int]:
+def load_class_map(config):
     """在预测时加载类别映射。"""
     # 获取检查点目录和类别映射文件的路径
     ckpt_dir = Path(config['paths']['checkpoint_dir'])
@@ -147,8 +147,8 @@ def load_class_map(config: Dict[str, Any]) -> Tuple[Dict[int, str], int]:
 
 
 def get_cosine_schedule_with_warmup(
-        optimizer: Optimizer, num_warmup_steps: int, num_training_steps: int,
-        num_cycles: float = 0.5, last_epoch: int = -1
+        optimizer, num_warmup_steps, num_training_steps,
+        num_cycles = 0.5, last_epoch = -1
 ) -> LambdaLR:
     """创建 "预热(warmup) + 余弦衰减(cosine decay)" 学习率调度器。"""
 

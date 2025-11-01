@@ -19,7 +19,7 @@ class YourDataset(Dataset):
     """
 
     # --- 初始化方法 ---
-    def __init__(self, config: Dict[str, Any], is_train: bool = True):
+    def __init__(self, config, is_train = True):
         """
         当创建这个类的实例时，这个方法会被调用。
         Args:
@@ -72,7 +72,7 @@ class YourDataset(Dataset):
         return len(self.dataset)
 
     # --- 根据索引获取单个样本的方法 ---
-    def __getitem__(self, index: int) -> Tuple:
+    def __getitem__(self, index) -> Tuple:
         """
         这个方法定义了如何根据给定的索引 `index` 获取一个数据样本。
         DataLoader 会在后台调用这个方法来构建一个批次(batch)的数据。
@@ -99,7 +99,7 @@ class YourDataset(Dataset):
 
 
 # --- 创建数据加载器的函数 ---
-def get_dataloaders(config: Dict[str, Any]) -> Tuple[DataLoader, DataLoader, Dataset]:
+def get_dataloaders(config):
     """
     为训练和验证创建并返回数据加载器。
     这个函数封装了数据集的加载、划分和DataLoader的创建，只为训练流程服务。
@@ -138,7 +138,7 @@ def get_dataloaders(config: Dict[str, Any]) -> Tuple[DataLoader, DataLoader, Dat
     return train_loader, dev_loader, train_set
 
 
-def get_test_loader(config: Dict[str, Any]) -> DataLoader:
+def get_test_loader(config) -> DataLoader:
     """为测试集创建并返回数据加载器。"""
     # 1. 创建测试数据集实例
     test_dataset = YourDataset(config, is_train=False)

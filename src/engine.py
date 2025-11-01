@@ -18,14 +18,13 @@ class Engine:
     """通用核心引擎类 (V2.5)。这个类封装了训练、验证和预测的所有核心逻辑。"""
 
     # --- 初始化方法 ---
-    def __init__(self,
-                 net: torch.nn.Module,  # 神经网络模型
-                 config: Dict[str, Any],  # 配置字典
-                 device: torch.device,  # 运行设备 (CPU 或 GPU)
-                 criterion: Optional[Callable] = None,  # 损失函数 (训练时需要)
-                 optimizer: Optional[torch.optim.Optimizer] = None,  # 优化器 (训练时需要)
-                 scheduler: Optional[torch.optim.lr_scheduler._LRScheduler] = None,  # 学习率调度器 (训练时需要)
-                 metric_fns: Optional[Dict[str, Callable]] = None):  # 评估指标函数字典 (训练时需要)
+    def __init__(self,net,
+                 config,  # 配置字典
+                 device,  # 运行设备 (CPU 或 GPU)
+                 criterion = None,  # 损失函数 (训练时需要)
+                 optimizer = None,  # 优化器 (训练时需要)
+                 scheduler = None,  # 学习率调度器 (训练时需要)
+                 metric_fns = None):  # 评估指标函数字典 (训练时需要)
 
         # --- 将传入的参数保存为类的属性 ---
         self.net = net  # 模型
@@ -55,7 +54,7 @@ class Engine:
         self.epochs_no_improve = 0
 
     # --- 私有方法：保存模型检查点 ---
-    def _save_checkpoint(self, is_best: bool = False) -> None:
+    def _save_checkpoint(self, is_best = False):
         """保存模型检查点。检查点包含了在特定时间点恢复训练或评估所需的所有信息。"""
         # 创建一个字典，用于存放需要保存的状态
         checkpoint = {
@@ -74,7 +73,7 @@ class Engine:
             torch.save(checkpoint, ckpt_dir / 'best_model.pth')
 
     # --- 私有方法：加载模型检查点 ---
-    def _load_checkpoint(self, path: str, is_training: bool) -> None:
+    def _load_checkpoint(self, path, is_training):
         """加载模型检查点。"""
         # 检查指定的路径是否存在文件
         if not os.path.exists(path):
@@ -104,7 +103,7 @@ class Engine:
 
     # --- 私有方法：运行一次完整的验证 ---
     @torch.no_grad()  # 这是一个装饰器，告诉 PyTorch 在这个函数中不需要计算梯度，可以节省计算资源和内存
-    def _run_validation(self, valid_loader: torch.utils.data.DataLoader) -> Dict[str, float]:
+    def _run_validation(self, valid_loader):
         """在验证集上运行一次完整的评估。"""
         # 将模型切换到评估模式 (evaluation mode)。这会关闭 Dropout 和 BatchNorm 的训练行为。
         self.net.eval()
@@ -139,8 +138,7 @@ class Engine:
         return avg_metrics
 
     # --- 公开方法：启动完整的训练流程 ---
-    def run_training(self, train_loader: torch.utils.data.DataLoader,
-                     valid_loader: torch.utils.data.DataLoader) -> None:
+    def run_training(self, train_loader,valid_loader):
         """启动完整的训练流程。"""
         # 记录日志，表示训练开始
         logger.info("开始训练流程...")
@@ -257,7 +255,7 @@ class Engine:
 
     # --- 公开方法：使用最佳模型进行预测 ---
     @torch.no_grad()  # 预测时同样不需要计算梯度
-    def predict(self, test_loader: torch.utils.data.DataLoader) -> Tuple[List, List]:
+    def predict(self, test_loader):
         """使用最佳模型进行预测。"""
         # 定义最佳模型检查点的路径
         best_model_path = os.path.join(self.config['paths']['checkpoint_dir'], 'best_model.pth')

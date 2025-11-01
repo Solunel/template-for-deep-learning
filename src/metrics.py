@@ -30,4 +30,4 @@ def accuracy_fn(outputs: torch.Tensor, labels: torch.Tensor) -> float:
     # 4. .mean() 计算这个 Tensor 的平均值，即 (正确的数量 / 总数量)，这就是准确率。
 
     # 5. .item() 从只有一个元素的 Tensor 中提取出 Python 的标量数值。
-    return (preds == labels).float().mean().item()
+    return preds.eq(labels).float().mean().item()
