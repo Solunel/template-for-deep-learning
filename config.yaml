@@ -1,48 +1,34 @@
-# config.yaml (V2.3 - 带有预设配置和引导)
-
+# config.yaml (V2.4 - Windows友好，无歧义)
 # ===================================================================
 # 预设配置示例 (请从中选择一套，复制到下方的主配置区)
 #
-# --- a) 轻量级快速测试配置 (适用于CPU或小型GPU) ---
+# --- a) 轻量级快速测试配置 (适用于CPU或小型GPU, Windows用户推荐) ---
 # hparams:
-#   learning_rate: 0.001
 #   batch_size: 16
+#   num_workers: 0  # 在Windows上必须为0，否则可能卡死
 #   total_steps: 1000
-#   warmup_steps: 100
-#   valid_steps: 200
-# model_params:
-#   n_classes: 10
-#   pretrained: false
-#   dropout_rate: 0.1
+# ...
 #
-# --- b) 标准性能配置 (适用于主流GPU, 如T4, 2080Ti) ---
+# --- b) 标准性能配置 (适用于Linux/macOS下的主流GPU) ---
 # hparams:
-#   learning_rate: 0.001
 #   batch_size: 64
+#   num_workers: 4
 #   total_steps: 100000
-#   warmup_steps: 1000
-#   valid_steps: 5000
-# model_params:
-#   n_classes: 10
-#   pretrained: true
-#   dropout_rate: 0.1
+# ...
 # ===================================================================
-
-# 1. 实验控制
 seed: 42
-
-# 2. 文件路径配置 (必需)
 paths:
   data_root: './data'
   checkpoint_dir: './checkpoints/experiment_001'
   log_dir: './logs/experiment_001'
   output_path: './prediction.csv'
-
-# 3. 训练超参数 (必需)
+  # (新增) 持久化类别映射文件的路径
+  class_map_file: 'class_map.json'
 hparams:
   learning_rate: 0.001
   batch_size: 32
-  num_workers: 2
+  num_workers: 0  # (修改) 默认值为0，对Windows用户更安全
+                   # (Linux/macOS用户可根据CPU核心数适当增加, e.g., 4, 8)
   total_steps: 20000
   warmup_steps: 200
   valid_steps: 1000
@@ -50,13 +36,9 @@ hparams:
   primary_metric_mode: 'max'
   enable_early_stopping: true
   patience: 5
-
-# 4. 数据处理参数
 data_params:
   image_size: 224
-
-# 5. 模型专属参数
 model_params:
-  n_classes: 10 # TODO: 确保这个值与你的数据集类别数一致 (train.py会自动更新)
+  # (修改) 彻底移除 n_classes，它的唯一来源是数据集
   pretrained: true
   dropout_rate: 0.1
