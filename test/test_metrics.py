@@ -18,5 +18,5 @@ def test_accuracy_zero_score():
 def test_accuracy_partial_score():
     """测试当部分预测正确时，准确率是否计算正确"""
     outputs = torch.tensor([[0.1, 0.9], [0.8, 0.2], [0.4, 0.6], [0.7, 0.3]])
-    labels = torch.tensor()
+    labels = torch.tensor()  # 预测应为，第1和第4个正确
     assert accuracy_fn(outputs, labels) == pytest.approx(0.5)

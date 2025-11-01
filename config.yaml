@@ -1,44 +1,42 @@
-# config.yaml (V2.4 - Windows友好，无歧义)
+# config.yaml (V2.5 - "大道至简")
+
 # ===================================================================
-# 预设配置示例 (请从中选择一套，复制到下方的主配置区)
-#
-# --- a) 轻量级快速测试配置 (适用于CPU或小型GPU, Windows用户推荐) ---
-# hparams:
-#   batch_size: 16
-#   num_workers: 0  # 在Windows上必须为0，否则可能卡死
-#   total_steps: 1000
-# ...
-#
-# --- b) 标准性能配置 (适用于Linux/macOS下的主流GPU) ---
-# hparams:
-#   batch_size: 64
-#   num_workers: 4
-#   total_steps: 100000
-# ...
+# 核心原则: 保持扁平，依靠清晰的命名来区分参数。
 # ===================================================================
+
 seed: 42
+
+# 1. 文件路径配置
 paths:
   data_root: './data'
-  checkpoint_dir: './checkpoints/experiment_001'
-  log_dir: './logs/experiment_001'
+  checkpoint_dir: './checkpoints/experiment_final'
+  log_dir: './logs/experiment_final'
   output_path: './prediction.csv'
-  # (新增) 持久化类别映射文件的路径
+  # 类别映射文件的名称，将保存在 checkpoint_dir 中
   class_map_file: 'class_map.json'
-hparams:
+
+# 2. 所有实验参数 (params)
+params:
+  # --- 训练控制 ---
   learning_rate: 0.001
   batch_size: 32
-  num_workers: 0  # (修改) 默认值为0，对Windows用户更安全
-                   # (Linux/macOS用户可根据CPU核心数适当增加, e.g., 4, 8)
   total_steps: 20000
   warmup_steps: 200
   valid_steps: 1000
-  primary_metric: 'accuracy'
-  primary_metric_mode: 'max'
+
+  # --- 评估与早停 ---
+  primary_metric: 'accuracy'      # 用于早停和选择最佳模型的核心指标
+  primary_metric_mode: 'max'      # 'max' (越大越好) 或 'min' (越小越好)
   enable_early_stopping: true
   patience: 5
-data_params:
+
+  # --- 数据加载 ---
+  num_workers: 0  # (重要!) Windows用户建议保持为0, Linux/macOS用户可根据CPU核心数适当增加
+
+  # --- 数据处理 ---
   image_size: 224
-model_params:
-  # (修改) 彻底移除 n_classes，它的唯一来源是数据集
+
+  # --- 模型结构 ---
+  # n_classes 将从数据动态获取，无需在此配置
   pretrained: true
   dropout_rate: 0.1
