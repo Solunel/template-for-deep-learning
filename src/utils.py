@@ -76,7 +76,7 @@ def load_config(config_path = "config.yaml"):
         return yaml.safe_load(f)
 
 
-def save_predictions(results, path) -> None:
+def save_predictions(results, path):
     """将预测结果保存为 Kaggle 要求的 CSV 格式。"""
     # 打开指定的路径用于写入 ('w')，newline='' 是为了防止写入空行
     with open(path, 'w', newline='') as f:
